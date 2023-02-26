@@ -1,17 +1,24 @@
 const phoneContainer = document.getElementById('phone-container');
+const searchInp = document.getElementById('search-inp');
+const searchBtn = document.getElementById('search-btn');
+const searchCount = document.getElementById('search-count');
+const loader = document.getElementById('loader');
 
 
 
-const showPhones = async () => {
-    const url = `https://openapi.programming-hero.com/api/phones?search=iphone`
+const showPhones = async (search) => {
+    const url = `https://openapi.programming-hero.com/api/phones?search=${search}`
 
     const res = await fetch(url)
     const data = await res.json()
 
     phoneContainer.innerHTML = ``
 
+    if(search!=null){
+        searchCount.innerHTML = `<h1 class="text-center">${data.data.length} Search Results</h1>`
+    }
+
     data.data.forEach(phone => {
-        console.log(phone)
 
         phoneContainer.innerHTML += `
         <div class="col">
@@ -26,6 +33,17 @@ const showPhones = async () => {
         `
     })
 
+    //stopping spinner
+    loader.classList.add('d-none')
+
 }
+
+searchBtn.addEventListener('click', event => {
+
+    //starting spinner and removing search count
+    loader.classList.remove('d-none')
+    searchCount.innerHTML = ``
+    showPhones(searchInp.value);
+})
 
 showPhones()

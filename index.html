@@ -9,7 +9,20 @@
 </head>
 <body>
     <header>
-        <h1 class="text-center mb-5">Welcome to Phone Hunter!</h1>
+        <h1 class="text-center my-5">Welcome to Phone Hunter!</h1>
+        <section class="d-flex justify-content-center mb-4">
+            <input type="text" name="" id="search-inp">
+            <button class="" id="search-btn">SEARCH</button>
+        </section>
+
+        <section class="d-flex justify-content-center">
+            <div id="loader" class="d-none spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+        </section>
+
+        <section id="search-count" class="mb-5">
+        </section>
     </header>
 
     <main>
