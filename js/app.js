@@ -5,6 +5,8 @@ const searchCount = document.getElementById('search-count');
 const loader = document.getElementById('loader');
 const showBtn = document.getElementById('show-btn');
 
+let temp = ''
+
 
 const showPhones = async (search, dataLimit) => {
     const url = `https://openapi.programming-hero.com/api/phones?search=${search}`
@@ -17,22 +19,22 @@ const showPhones = async (search, dataLimit) => {
     
 
     if(search!=null && dataLimit){
-        searchCount.innerHTML = `<h1 class="text-center">${data.data.length} Search Results for ${searchInp.value}</h1>`
+        searchCount.innerHTML = `<h3 class="text-center">${data.data.length} Search Results for ${searchInp.value}</h3>`
     }
 
-    if(dataLimit && data.data.length>10){
+    if(dataLimit == true && data.data.length>10){
         data.data = data.data.slice(0,10)
         showBtn.classList.remove('d-none')
 
-        const temp = searchInp.value;
+        temp = searchInp.value;
 
         showBtn.addEventListener('click', event => {
-            const dataLimit = false;
-            showPhones(temp, dataLimit);
+            showPhones(temp, false);
         })
 
     }else{
-        showBtn.classList.add('d-none')
+        showBtn.classList.add('d-none');
+        temp = '';
     }
 
     searchInp.value = ''
