@@ -3,10 +3,10 @@ const searchInp = document.getElementById('search-inp');
 const searchBtn = document.getElementById('search-btn');
 const searchCount = document.getElementById('search-count');
 const loader = document.getElementById('loader');
+const showBtn = document.getElementById('show-btn');
 
 
-
-const showPhones = async (search) => {
+const showPhones = async (search, dataLimit) => {
     const url = `https://openapi.programming-hero.com/api/phones?search=${search}`
 
     const res = await fetch(url)
@@ -14,9 +14,28 @@ const showPhones = async (search) => {
 
     phoneContainer.innerHTML = ``
 
-    if(search!=null){
-        searchCount.innerHTML = `<h1 class="text-center">${data.data.length} Search Results</h1>`
+    
+
+    if(search!=null && dataLimit){
+        searchCount.innerHTML = `<h1 class="text-center">${data.data.length} Search Results for ${searchInp.value}</h1>`
     }
+
+    if(dataLimit && data.data.length>10){
+        data.data = data.data.slice(0,10)
+        showBtn.classList.remove('d-none')
+
+        const temp = searchInp.value;
+
+        showBtn.addEventListener('click', event => {
+            const dataLimit = false;
+            showPhones(temp, dataLimit);
+        })
+
+    }else{
+        showBtn.classList.add('d-none')
+    }
+
+    searchInp.value = ''
 
     data.data.forEach(phone => {
 
@@ -43,7 +62,8 @@ searchBtn.addEventListener('click', event => {
     //starting spinner and removing search count
     loader.classList.remove('d-none')
     searchCount.innerHTML = ``
-    showPhones(searchInp.value);
+    const dataLimit = true;
+    showPhones(searchInp.value, dataLimit);
 })
 
 showPhones()
