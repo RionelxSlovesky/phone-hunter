@@ -7,6 +7,31 @@ const showBtn = document.getElementById('show-btn');
 
 let temp = ''
 
+const getPhoneDetails = async (id) => {
+    url = `https://openapi.programming-hero.com/api/phone/${id}`
+
+    const res = await fetch(url)
+    const data = await res.json()
+
+    const detailsDiv = document.createElement('div')
+    detailsDiv.innerHTML = `
+
+        <h6 class="card-title">Main Features:</h6>
+
+        <ul style="width: 14em;" class="card-text">
+            <li>Chip Set: ${data.data.mainFeatures.chipSet}</li>
+            <li>Display Size: ${data.data.mainFeatures.displaySize}</li>
+            <li>Display Size: ${data.data.mainFeatures.displaySize}</li>
+            <li>Sensors: ${data.data.mainFeatures.sensors.join(", ")}</li>
+            <li>Storage: ${data.data.mainFeatures.storage}</li>
+        </ul>
+    `
+
+    console.log(detailsDiv)
+    return detailsDiv;
+
+}
+
 
 const showPhones = async (search, dataLimit) => {
     const url = `https://openapi.programming-hero.com/api/phones?search=${search}`
@@ -19,7 +44,7 @@ const showPhones = async (search, dataLimit) => {
     
 
     if(search!=null && dataLimit){
-        searchCount.innerHTML = `<h3 class="text-center">${data.data.length} Search Results for ${searchInp.value}</h3>`
+        searchCount.innerHTML = `<h3 class="text-center">${data.data.length} Search Results for "${searchInp.value}"</h3>`
     }
 
     if(dataLimit == true && data.data.length>10){
@@ -41,17 +66,26 @@ const showPhones = async (search, dataLimit) => {
 
     data.data.forEach(phone => {
 
-        phoneContainer.innerHTML += `
+
+        async function getPD(){
+            const mainFeatures = await getPhoneDetails(phone.slug)
+
+            phoneContainer.innerHTML += `
         <div class="col">
             <div class="card">
                 <img style="width: 14em;" src="${phone.image}" class="card-img-top mx-auto" alt="...">
                 <div class="card-body d-flex flex-column align-items-center">
                     <h5 class="card-title">Phone Name: ${phone.phone_name}</h5>
-                    <p style="width: 14em;" class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    ${mainFeatures.innerHTML}
                 </div>
             </div>
         </div>
         `
+
+          };
+
+        const mainFeatures = getPD();
+
     })
 
     //stopping spinner
@@ -68,4 +102,16 @@ searchBtn.addEventListener('click', event => {
     showPhones(searchInp.value, dataLimit);
 })
 
+searchInp.addEventListener('keydown', event => {
+
+    if(event.key == 'Enter'){
+        //starting spinner and removing search count
+    loader.classList.remove('d-none')
+    searchCount.innerHTML = ``
+    const dataLimit = true;
+    showPhones(searchInp.value, dataLimit);
+    }
+})
+
 showPhones()
+
